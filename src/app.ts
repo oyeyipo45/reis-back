@@ -2,11 +2,11 @@ import express from "express";
 import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from "./config";
 import { connect, set, disconnect } from "mongoose";
 import { dbConnection } from "./databases";
-import { Routes } from 'routes/hotels.routes';
-import errorMiddleware from './middlewares/error.middleware';
-import cors from 'cors';
-import hpp from "hpp"
-import helmet from "helmet"
+import { Routes } from "routes/hotels.routes";
+import errorMiddleware from "./middlewares/error.middleware";
+import cors from "cors";
+import hpp from "hpp";
+import helmet from "helmet";
 class App {
   public app: express.Application;
   public env: string;
@@ -18,9 +18,9 @@ class App {
     this.port = PORT || 4000;
 
     this.connectToDatabase();
+    this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
-    this.initializeMiddlewares();
   }
 
   public listen() {
@@ -52,7 +52,7 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
+    this.app.use(cors({ origin: ORIGIN }));
     this.app.use(hpp());
     this.app.use(helmet());
   }
