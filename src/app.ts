@@ -3,6 +3,7 @@ import { NODE_ENV, PORT } from "./config";
 import { connect, set, disconnect } from "mongoose";
 import { dbConnection } from "./databases";
 import { Routes } from 'routes/hotels.routes';
+import errorMiddleware from './middlewares/error.middleware';
 class App {
   public app: express.Application;
   public env: string;
@@ -15,6 +16,7 @@ class App {
 
     this.connectToDatabase();
     this.initializeRoutes(routes);
+    this.initializeErrorHandling();
   }
 
   public listen() {
@@ -49,6 +51,10 @@ class App {
     routes.forEach((route) => {
       this.app.use("/", route.router);
     });
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
   }
 }
 

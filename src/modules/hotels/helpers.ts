@@ -1,5 +1,5 @@
-import { TRANSLATION_FALLBACK_ORDER, berlin } from '../../utils/constants';
-import { IHotel } from './interface/hotels.interface';
+import { TRANSLATION_FALLBACK_ORDER, berlin } from "../../utils/constants";
+import { IHotel } from "./interface/hotels.interface";
 
 interface HotelFilter {
   name?: string;
@@ -33,19 +33,17 @@ export const queryFilter = (filter: HotelFilter): any => {
     }
   }
 
-   if (filter.distance && filter.lat !== undefined && filter.lng !== undefined) {
-     const radiusInRadians = filter.distance / 6371;
-     query.location = {
-       $geoWithin: {
-         $centerSphere: [[filter.lng, filter.lat], radiusInRadians],
-       },
-     };
-   }
+  if (filter.distance && filter.lat !== undefined && filter.lng !== undefined) {
+    const radiusInRadians = filter.distance / 6371;
+    query.location = {
+      $geoWithin: {
+        $centerSphere: [[filter.lng, filter.lat], radiusInRadians],
+      },
+    };
+  }
 
-  
   return query;
 };
-
 
 export const getHotelsInBerlin = (hotels: IHotel[], lang: string) => {
   return hotels.map((hotel) => {
