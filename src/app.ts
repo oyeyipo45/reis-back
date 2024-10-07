@@ -1,9 +1,12 @@
 import express from "express";
-import { NODE_ENV, PORT } from "./config";
+import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from "./config";
 import { connect, set, disconnect } from "mongoose";
 import { dbConnection } from "./databases";
 import { Routes } from 'routes/hotels.routes';
 import errorMiddleware from './middlewares/error.middleware';
+import cors from 'cors';
+import hpp from "hpp"
+import helmet from "helmet"
 class App {
   public app: express.Application;
   public env: string;
@@ -17,6 +20,7 @@ class App {
     this.connectToDatabase();
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
+    this.initializeMiddlewares();
   }
 
   public listen() {
@@ -45,6 +49,12 @@ class App {
 
     await connect(dbConnection.url);
     console.log(`Database connected successfully`);
+  }
+
+  private initializeMiddlewares() {
+    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
+    this.app.use(hpp());
+    this.app.use(helmet());
   }
 
   private initializeRoutes(routes: Routes[]) {
