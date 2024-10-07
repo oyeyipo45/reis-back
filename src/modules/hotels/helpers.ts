@@ -1,3 +1,6 @@
+import { TRANSLATION_FALLBACK_ORDER, berlin } from '../../utils/constants';
+import { IHotel } from './interface/hotels.interface';
+
 interface HotelFilter {
   name?: string;
   minPrice?: number;
@@ -29,6 +32,71 @@ export const queryFilter = (filter: HotelFilter): any => {
       query.minPrice.$lte = filter.maxPrice;
     }
   }
+
+   if (filter.distance && filter.lat !== undefined && filter.lng !== undefined) {
+     const radiusInRadians = filter.distance / 6371;
+     query.location = {
+       $geoWithin: {
+         $centerSphere: [[filter.lng, filter.lat], radiusInRadians],
+       },
+     };
+   }
+
   
   return query;
 };
+
+
+export const getHotelsInBerlin = (hotels: IHotel[], lang: string) => {
+  return hotels.map((hotel) => {
+    const { name, address, city, description, lat, lng, minPrice, currencyCode, deals, images, id } = hotel;
+    const distanceToCenterkm = calculateDistance(berlin.lat, berlin.lng, lat, lng);
+
+    const translate = (obj: any, lang: string) => {
+      for (const fallbackLang of [lang, ...TRANSLATION_FALLBACK_ORDER]) {
+        if (obj[fallbackLang]) return obj[fallbackLang];
+      }
+      return "";
+    };
+
+    return {
+      name: translate(name || {}, lang),
+      address: translate(address || {}, lang),
+      city: translate(city || {}, lang),
+      description: translate(description || {}, lang),
+      id,
+      minPrice,
+      currencyCode,
+      distanceToCenterkm,
+      firstDeal: {
+        expireTime: deals[0]?.expireTime,
+        headline: translate(deals[0]?.headline || {}, lang),
+        details: translate(deals[0]?.details || {}, lang),
+      },
+      firstImage: {
+        url: images[0]?.url || "",
+        caption: translate(images[0]?.caption || {}, lang),
+      },
+    };
+  });
+};
+
+export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const R = 6371; // Radius of the Earth in km
+  const dLat = degToRad(lat2 - lat1);
+  const dLon = degToRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+};
+
+const degToRad = (deg: number): number => deg * (Math.PI / 180);
+
+interface HotelFilter {
+  name?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  distance?: number;
+  lat?: number;
+  lng?: number;
+}
