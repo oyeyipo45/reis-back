@@ -2,17 +2,19 @@ import express from "express";
 import { NODE_ENV, PORT } from "./config";
 import { connect, set, disconnect } from "mongoose";
 import { dbConnection } from "./databases";
+import { Routes } from 'routes/hotels.routes';
 class App {
   public app: express.Application;
   public env: string;
   public port: string | number;
 
-  constructor() {
+  constructor(routes: Routes[]) {
     this.app = express();
     this.env = NODE_ENV || "development";
     this.port = PORT || 4000;
 
     this.connectToDatabase();
+    this.initializeRoutes(routes);
   }
 
   public listen() {
@@ -41,6 +43,12 @@ class App {
 
     await connect(dbConnection.url);
     console.log(`Database connected successfully`);
+  }
+
+  private initializeRoutes(routes: Routes[]) {
+    routes.forEach((route) => {
+      this.app.use("/", route.router);
+    });
   }
 }
 
