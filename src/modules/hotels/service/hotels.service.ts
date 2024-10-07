@@ -1,6 +1,7 @@
 import { Result } from 'common/common.interface';
 import { IHotel, IHotelResponse } from '../interface/hotels.interface';
 import hotelModel from "../model/hotels.models";
+import { queryFilter } from '../helpers';
 
 class HotelService {
   public hotels = hotelModel;
@@ -11,7 +12,9 @@ class HotelService {
     const filters = { name : search, minPrice, maxPrice, distance, lat, lng };
 
 
-    const hotels: IHotelResponse[] = await this.hotels.find();
+    const filteredQuery = queryFilter(filters);
+
+    const hotels: IHotelResponse[] = await this.hotels.find(filteredQuery);
 
     return {
       success: true,
