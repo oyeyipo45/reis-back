@@ -6,5 +6,3 @@ export const translate = (obj: any, lang: string) => {
   }
   return "";
 };
-
-

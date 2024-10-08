@@ -18,6 +18,23 @@ export interface IHotelResponse {
   };
 }
 
+export interface SingleHotel {
+  _id?: string;
+  id: number;
+  name: LocaleDefinition;
+  address: LocaleDefinition;
+  city: LocaleDefinition;
+  description: LocaleDefinition;
+  minPrice: number;
+  currencyCode: string;
+  benefits:IBenefit[];
+  deals: IDeal[];
+  images: IImage[];
+  lat: number;
+  lng: number;
+  distanceToCenterkm: number;
+}
+
 export interface IHotel {
   _id?: string;
   id: number;
@@ -45,15 +62,31 @@ export interface Benefit {
   text: LocaleDefinition;
 }
 
+
+export interface IBenefit {
+  text: string;
+}
+
 export interface Deal {
   expireTime: Date;
   headline: LocaleDefinition;
   details: LocaleDefinition;
 }
 
+export interface IDeal {
+  expireTime: Date;
+  headline: string;
+  details: string;
+}
+
 export interface Image {
   url: string;
   caption: LocaleDefinition;
+}
+
+export interface IImage {
+  url: string;
+  caption: string;
 }
 
 export interface LocaleDefinition {

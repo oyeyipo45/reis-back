@@ -1,7 +1,7 @@
-import { IHotelResponse } from 'modules/hotels/interface/hotels.interface';
+import { IHotel, IHotelResponse } from 'modules/hotels/interface/hotels.interface';
 
-export interface Result {
+export interface Result<T> {
   success: boolean;
   error: string;
-  result: IHotelResponse[];
+  result: T;
 }

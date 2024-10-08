@@ -1,5 +1,6 @@
+import { translate } from "../../utils/helper";
 import { TRANSLATION_FALLBACK_ORDER, berlin } from "../../utils/constants";
-import { IHotel } from "./interface/hotels.interface";
+import { Benefit, Deal, IHotel, Image } from "./interface/hotels.interface";
 
 interface HotelFilter {
   name?: string;
@@ -43,7 +44,6 @@ export const queryFilter = (filter: HotelFilter): any => {
     };
   }
 
-
   return query;
 };
 
@@ -77,6 +77,53 @@ export const getHotelsInBerlin = (hotels: IHotel[], lang: string) => {
         url: images[0]?.url || "",
         caption: translate(images[0]?.caption || {}, lang),
       },
+    };
+  });
+};
+
+export const getHotelTranslation = (hotel: IHotel, lang: string) => {
+  
+    const { name, address, city, description, lat, lng, minPrice, currencyCode, deals, images, id, benefits } = hotel;
+    const distanceToCenterkm = calculateDistance(berlin.lat, berlin.lng, lat, lng);
+
+    return {
+      name: translate(name || {}, lang),
+      address: translate(address || {}, lang),
+      city: translate(city || {}, lang),
+      description: translate(description || {}, lang),
+      id,
+      minPrice,
+      currencyCode,
+      distanceToCenterkm,
+      deals: getDeals(deals, lang),
+      images: getImages(images, lang),
+      benefits: getBenefits(benefits, lang),
+    };
+};
+
+const getDeals = (deals: Deal[], lang: string) => {
+  return deals.map((deal) => {
+    return {
+      expireTime: deal.expireTime,
+      headline: translate(deal.headline || {}, lang),
+      details: translate(deal.details || {}, lang),
+    };
+  });
+};
+
+const getImages = (images: Image[], lang: string) => {
+  return images.map((image) => {
+    return {
+      url: image.url,
+      caption: translate(image.caption || {}, lang),
+    };
+  });
+};
+
+const getBenefits = (benefits: Benefit[], lang: string) => {
+  return benefits.map((benefit) => {
+    return {
+      text: translate(benefit.text || {}, lang),
     };
   });
 };
