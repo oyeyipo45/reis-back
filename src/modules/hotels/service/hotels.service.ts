@@ -28,6 +28,26 @@ class HotelService {
       throw new HttpException(500, error as any);
     }
   }
+
+  public async getHotel(req): Promise<Result> {
+    const { lang = "en-US" } = req.query;
+
+    const { id } = req.params;
+
+    try {
+      const allHotels: IHotel = await this.hotels.findById({ _id: id });
+
+      const hotel = getHotelsInBerlin([allHotels], lang);
+
+      return {
+        success: true,
+        result: hotel,
+        error: "",
+      };
+    } catch (error) {
+      throw new HttpException(500, error as any);
+    }
+  }
 }
 
 export default HotelService;

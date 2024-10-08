@@ -14,6 +14,16 @@ class HotelsController {
       next(error);
     }
   };
+
+  public getHotel = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const findAllHotel: Result = await this.hotelService.getHotel(req);
+
+      res.status(200).json(findAllHotel);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default HotelsController;

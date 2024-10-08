@@ -8,6 +8,7 @@ interface HotelFilter {
   distance?: number;
   lat?: number;
   lng?: number;
+  _id?: string;
 }
 
 export const queryFilter = (filter: HotelFilter): any => {
@@ -41,6 +42,7 @@ export const queryFilter = (filter: HotelFilter): any => {
       },
     };
   }
+
 
   return query;
 };

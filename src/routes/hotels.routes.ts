@@ -10,14 +10,15 @@ export interface Routes {
 class HotelsRoute implements Routes {
   public path = "/v1/recruiting/hotels";
   public router = Router();
-  public usersController = new HotelsController();
+  public hotelController = new HotelsController();
 
   constructor() {
     this.initializeRoutes();
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.usersController.getHotels);
+    this.router.get(`${this.path}`, this.hotelController.getHotels);
+    this.router.get(`${this.path}/:id`, this.hotelController.getHotel);
   }
 }
 
